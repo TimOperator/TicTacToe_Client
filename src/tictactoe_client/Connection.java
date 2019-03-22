@@ -19,6 +19,10 @@ public class Connection extends Thread {
     private DataInputStream dataIn;
     private final MainClientFrame window;
     private boolean activeGame;
+
+    public boolean isActiveGame() {
+        return activeGame;
+    }
     private final ResourceBundle stringBundle = ResourceBundle.getBundle("resources/strings");
 
     public Connection(MainClientFrame mcf) {

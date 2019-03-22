@@ -73,6 +73,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
 
     protected void setWinner(String w) {
         this.winner = w;
+        jLabel.setText(STRING_BUNDLE.getString("Inform_game_over"));
         winning();
     }
 
@@ -177,6 +178,9 @@ public final class MainClientFrame extends javax.swing.JFrame {
         jButton9.setEnabled(boo);
     }
 
+    /**
+     * Clears the field (all buttons are set to default)
+     */
     private void clearAll() {
         clearButton(jButton1);
         clearButton(jButton2);
@@ -193,6 +197,10 @@ public final class MainClientFrame extends javax.swing.JFrame {
         button.setText("");
     }
 
+    /**
+     * Set status of field
+     * @param bo Enable field
+     */
     protected void setEnabledField(boolean bo) {
         enableButton(jButton1, bo);
         enableButton(jButton2, bo);
@@ -237,6 +245,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_draw"));
         }
+        startGameButton.setEnabled(true);
         setConnectionEditable(true);
     }
 
@@ -281,19 +290,9 @@ public final class MainClientFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        connectionPanel = new javax.swing.JPanel();
-        addressLabel = new javax.swing.JLabel();
-        addressTextField = new javax.swing.JTextField();
-        portLabel = new javax.swing.JLabel();
-        portTextField = new javax.swing.JTextField();
-        playerTextField = new javax.swing.JTextField();
-        playerLabel = new javax.swing.JLabel();
-        connectButton = new javax.swing.JButton();
-        updateCheckButton = new javax.swing.JButton();
+        playerTypeButtonGroup = new javax.swing.ButtonGroup();
+        aiButtonGroup = new javax.swing.ButtonGroup();
         gamePanel = new javax.swing.JPanel();
-        oRadio = new javax.swing.JRadioButton();
-        xRadio = new javax.swing.JRadioButton();
         fieldPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -304,131 +303,35 @@ public final class MainClientFrame extends javax.swing.JFrame {
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
+        connectionPanel = new javax.swing.JPanel();
+        addressLabel = new javax.swing.JLabel();
+        addressTextField = new javax.swing.JTextField();
+        portLabel = new javax.swing.JLabel();
+        portTextField = new javax.swing.JTextField();
+        playerTextField = new javax.swing.JTextField();
+        playerLabel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         jLabel = new javax.swing.JLabel();
         playerXOLabel = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        xRadio = new javax.swing.JRadioButton();
+        oRadio = new javax.swing.JRadioButton();
+        connectButton = new javax.swing.JButton();
+        settingsPanel = new javax.swing.JPanel();
+        updateCheckButton = new javax.swing.JButton();
+        localMPRadioButton = new javax.swing.JRadioButton();
+        localAIRadioButton = new javax.swing.JRadioButton();
+        startGameButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("TicTacToe v2.1");
+        setTitle("TicTacToe v3.0");
         setMinimumSize(new java.awt.Dimension(313, 527));
         setName("frame"); // NOI18N
         setResizable(false);
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/strings"); // NOI18N
-        connectionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("View_connection"))); // NOI18N
-
-        addressLabel.setText(bundle.getString("Field_server")); // NOI18N
-
-        addressTextField.setText("easyuse.hopto.org");
-        addressTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                addressTextFieldKeyReleased(evt);
-            }
-        });
-
-        portLabel.setText(bundle.getString("Field_Port")); // NOI18N
-
-        portTextField.setText("50471");
-        portTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                portTextFieldKeyReleased(evt);
-            }
-        });
-
-        playerTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                playerTextFieldActionPerformed(evt);
-            }
-        });
-        playerTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                playerTextFieldKeyReleased(evt);
-            }
-        });
-
-        playerLabel.setText(bundle.getString("Field_name")); // NOI18N
-
-        connectButton.setText(bundle.getString("Field_connect")); // NOI18N
-        connectButton.setEnabled(false);
-        connectButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                connectButtonActionPerformed(evt);
-            }
-        });
-
-        updateCheckButton.setText(bundle.getString("Field_update")); // NOI18N
-        updateCheckButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateCheckButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout connectionPanelLayout = new javax.swing.GroupLayout(connectionPanel);
-        connectionPanel.setLayout(connectionPanelLayout);
-        connectionPanelLayout.setHorizontalGroup(
-            connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(connectionPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(connectionPanelLayout.createSequentialGroup()
-                        .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(addressLabel)
-                            .addComponent(portLabel)
-                            .addComponent(playerLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(playerTextField)
-                            .addComponent(portTextField)
-                            .addComponent(addressTextField)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, connectionPanelLayout.createSequentialGroup()
-                        .addComponent(updateCheckButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(connectButton)))
-                .addContainerGap())
-        );
-        connectionPanelLayout.setVerticalGroup(
-            connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(connectionPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addressLabel)
-                    .addComponent(addressTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(portLabel)
-                    .addComponent(portTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(playerTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(playerLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(connectButton)
-                    .addComponent(updateCheckButton))
-                .addContainerGap())
-        );
-
         gamePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("View_field"))); // NOI18N
         gamePanel.setEnabled(false);
-
-        buttonGroup1.add(oRadio);
-        oRadio.setText("O");
-        oRadio.setEnabled(false);
-        oRadio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                oRadioActionPerformed(evt);
-            }
-        });
-
-        buttonGroup1.add(xRadio);
-        xRadio.setSelected(true);
-        xRadio.setText("X");
-        xRadio.setEnabled(false);
-        xRadio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xRadioActionPerformed(evt);
-            }
-        });
 
         fieldPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         fieldPanel.setMinimumSize(new java.awt.Dimension(50, 50));
@@ -497,49 +400,212 @@ public final class MainClientFrame extends javax.swing.JFrame {
         });
         fieldPanel.add(jButton9);
 
-        jLabel.setText("Nicht verbunden");
-
-        playerXOLabel.setText(bundle.getString("Field_player_type")); // NOI18N
-
-        jLabel1.setText(bundle.getString("Field_information")); // NOI18N
-        jLabel1.setToolTipText("");
-
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
         gamePanelLayout.setHorizontalGroup(
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(gamePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(gamePanelLayout.createSequentialGroup()
-                        .addComponent(playerXOLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(xRadio)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(oRadio))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, gamePanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel))
-                    .addComponent(fieldPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14))
+                .addComponent(fieldPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         gamePanelLayout.setVerticalGroup(
             gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, gamePanelLayout.createSequentialGroup()
-                .addContainerGap(11, Short.MAX_VALUE)
-                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(xRadio)
-                    .addComponent(oRadio)
-                    .addComponent(playerXOLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(fieldPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
+
+        connectionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("View_connection"))); // NOI18N
+        connectionPanel.setToolTipText(bundle.getString("View_online")); // NOI18N
+
+        addressLabel.setText(bundle.getString("Field_server")); // NOI18N
+
+        addressTextField.setText("easyuse.hopto.org");
+        addressTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                addressTextFieldKeyReleased(evt);
+            }
+        });
+
+        portLabel.setText(bundle.getString("Field_Port")); // NOI18N
+
+        portTextField.setText("50471");
+        portTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                portTextFieldKeyReleased(evt);
+            }
+        });
+
+        playerTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                playerTextFieldActionPerformed(evt);
+            }
+        });
+        playerTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                playerTextFieldKeyReleased(evt);
+            }
+        });
+
+        playerLabel.setText(bundle.getString("Field_name")); // NOI18N
+
+        jLabel1.setText(bundle.getString("Field_information")); // NOI18N
+        jLabel1.setToolTipText("");
+
+        jLabel.setText("Nicht verbunden");
+
+        playerXOLabel.setText(bundle.getString("Field_player_type")); // NOI18N
+
+        playerTypeButtonGroup.add(xRadio);
+        xRadio.setSelected(true);
+        xRadio.setText("X");
+        xRadio.setEnabled(false);
+        xRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xRadioActionPerformed(evt);
+            }
+        });
+
+        playerTypeButtonGroup.add(oRadio);
+        oRadio.setText("O");
+        oRadio.setEnabled(false);
+        oRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                oRadioActionPerformed(evt);
+            }
+        });
+
+        connectButton.setText(bundle.getString("Field_connect")); // NOI18N
+        connectButton.setEnabled(false);
+        connectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                connectButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout connectionPanelLayout = new javax.swing.GroupLayout(connectionPanel);
+        connectionPanel.setLayout(connectionPanelLayout);
+        connectionPanelLayout.setHorizontalGroup(
+            connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(connectionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(connectionPanelLayout.createSequentialGroup()
+                        .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(addressLabel)
+                            .addComponent(portLabel)
+                            .addComponent(playerLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(playerTextField)
+                            .addComponent(portTextField)
+                            .addComponent(addressTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)))
+                    .addGroup(connectionPanelLayout.createSequentialGroup()
+                        .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(playerXOLabel)
+                            .addComponent(jLabel1))
+                        .addGap(18, 18, 18)
+                        .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel)
+                            .addGroup(connectionPanelLayout.createSequentialGroup()
+                                .addComponent(xRadio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(oRadio)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, connectionPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(connectButton)))
+                .addContainerGap())
+        );
+        connectionPanelLayout.setVerticalGroup(
+            connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(connectionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addressLabel)
+                    .addComponent(addressTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(portLabel)
+                    .addComponent(portTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(playerTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(playerLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(playerXOLabel)
+                    .addComponent(xRadio)
+                    .addComponent(oRadio))
+                .addGap(10, 10, 10)
+                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addComponent(connectButton)
+                .addContainerGap())
+        );
+
+        jTabbedPane2.addTab(bundle.getString("View_online"), connectionPanel); // NOI18N
+
+        settingsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("View_settings"))); // NOI18N
+
+        updateCheckButton.setText(bundle.getString("Field_update")); // NOI18N
+        updateCheckButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateCheckButtonActionPerformed(evt);
+            }
+        });
+
+        aiButtonGroup.add(localMPRadioButton);
+        localMPRadioButton.setSelected(true);
+        localMPRadioButton.setText(bundle.getString("Field_local_mp")); // NOI18N
+
+        aiButtonGroup.add(localAIRadioButton);
+        localAIRadioButton.setText(bundle.getString("Field_local_ai")); // NOI18N
+
+        startGameButton.setText(bundle.getString("Field_start_game")); // NOI18N
+        startGameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startGameButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
+        settingsPanel.setLayout(settingsPanelLayout);
+        settingsPanelLayout.setHorizontalGroup(
+            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                        .addComponent(localMPRadioButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(localAIRadioButton)
+                        .addGap(0, 13, Short.MAX_VALUE))
+                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                        .addComponent(updateCheckButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(startGameButton)))
+                .addContainerGap())
+        );
+        settingsPanelLayout.setVerticalGroup(
+            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsPanelLayout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(localMPRadioButton)
+                    .addComponent(localAIRadioButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, Short.MAX_VALUE)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(updateCheckButton)
+                    .addComponent(startGameButton))
+                .addContainerGap())
+        );
+
+        jTabbedPane2.addTab(bundle.getString("View_offline"), settingsPanel); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -547,20 +613,22 @@ public final class MainClientFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(connectionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(gamePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jTabbedPane2)
+                    .addComponent(gamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(connectionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
+
+        jTabbedPane2.getAccessibleContext().setAccessibleName(bundle.getString("View_online")); // NOI18N
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -639,6 +707,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
 
     private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectButtonActionPerformed
         clearAll();
+        setEnabledField(false);
         setConnectionEditable(false);
         serverIP = addressTextField.getText().trim();
         serverPort = new Integer(portTextField.getText().trim());
@@ -656,6 +725,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
             connection.activateGame();
             if (!connection.isAlive()) {
                 connection.start();
+                startGameButton.setEnabled(false);
             }
         } else {
             JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_unable_to_connect") + " " + serverIP);
@@ -670,6 +740,15 @@ public final class MainClientFrame extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, reply);
         updateCheckButton.setEnabled(true);
     }//GEN-LAST:event_updateCheckButtonActionPerformed
+
+    private void startGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startGameButtonActionPerformed
+        if (connection.isActiveGame()) {
+            JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_game_running"));
+            return;
+        }
+        clearAll();
+        setEnabledField(true);
+    }//GEN-LAST:event_startGameButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -705,7 +784,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addressLabel;
     private javax.swing.JTextField addressTextField;
-    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup aiButtonGroup;
     private javax.swing.JButton connectButton;
     private javax.swing.JPanel connectionPanel;
     private javax.swing.JPanel fieldPanel;
@@ -721,12 +800,18 @@ public final class MainClientFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JRadioButton localAIRadioButton;
+    private javax.swing.JRadioButton localMPRadioButton;
     private javax.swing.JRadioButton oRadio;
     private javax.swing.JLabel playerLabel;
     private javax.swing.JTextField playerTextField;
+    private javax.swing.ButtonGroup playerTypeButtonGroup;
     private javax.swing.JLabel playerXOLabel;
     private javax.swing.JLabel portLabel;
     private javax.swing.JTextField portTextField;
+    private javax.swing.JPanel settingsPanel;
+    private javax.swing.JButton startGameButton;
     private javax.swing.JButton updateCheckButton;
     private javax.swing.JRadioButton xRadio;
     // End of variables declaration//GEN-END:variables
