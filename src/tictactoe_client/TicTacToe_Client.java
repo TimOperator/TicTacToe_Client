@@ -5,7 +5,9 @@
  */
 package tictactoe_client;
 
+import java.util.ResourceBundle;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -13,20 +15,22 @@ import javax.swing.UIManager;
  */
 public class TicTacToe_Client {
 
+    private static final ResourceBundle STRING_BUNDLE = ResourceBundle.getBundle("resources/strings");
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             //Doesn't matter
         }
         MainClientFrame userframe = new MainClientFrame();
         userframe.setVisible(true);
         if (args.length >= 1 && args[0].equalsIgnoreCase("advancedMode")) {
             userframe.useAdvancedMode(true);
-            System.out.println("You are using the advanced mode now.");
+            System.out.println(STRING_BUNDLE.getString("Inform_advanced_mode"));
         } else {
             userframe.useAdvancedMode(false);
         }

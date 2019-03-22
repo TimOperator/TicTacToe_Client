@@ -7,6 +7,7 @@ package tictactoe_client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -18,6 +19,7 @@ public class Connection extends Thread {
     private DataInputStream dataIn;
     private final MainClientFrame window;
     private boolean activeGame;
+    private final ResourceBundle stringBundle = ResourceBundle.getBundle("resources/strings");
 
     public Connection(MainClientFrame mcf) {
         this.window = mcf;
@@ -38,10 +40,10 @@ public class Connection extends Thread {
             while (!status.equalsIgnoreCase("STOP")) {
                 status = window.receive();
                 if (status.equalsIgnoreCase("WAIT_FOR_TURN")) {
-                    window.setLabel("Warte auf Spielzug");
+                    window.setLabel(stringBundle.getString(status));
                     window.setEnabledField(false);
                 } else if (status.equalsIgnoreCase("MAKE_A_TURN")) {
-                    window.setLabel("Mache einen Spielzug");
+                    window.setLabel(stringBundle.getString(status));
                     window.setEnabledField(true);
                 } else if (status.equalsIgnoreCase("SET_POS")) {
                     int x = new Integer(window.receive());

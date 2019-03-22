@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -30,6 +31,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
     private String username;
     private String enemy;
     private final Connection connection;
+    private static final ResourceBundle STRING_BUNDLE = ResourceBundle.getBundle("resources/strings");
 
     /**
      * Creates new form MainJFrame
@@ -229,11 +231,11 @@ public final class MainClientFrame extends javax.swing.JFrame {
 
     protected void winning() {
         if (winner.equalsIgnoreCase(username)) {
-            JOptionPane.showMessageDialog(null, "Du hast gewonnen!");
+            JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_you_won"));
         } else if (winner.equalsIgnoreCase(enemy)) {
-            JOptionPane.showMessageDialog(null, enemy + " hat gewonnen!");
+            JOptionPane.showMessageDialog(null, enemy + " " + STRING_BUNDLE.getString("Inform_opposition_won"));
         } else {
-            JOptionPane.showMessageDialog(null, "Unentschieden!");
+            JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_draw"));
         }
         setConnectionEditable(true);
     }
@@ -242,10 +244,10 @@ public final class MainClientFrame extends javax.swing.JFrame {
         String status = "";
         while (!status.equalsIgnoreCase("STOP")) {
             if (status.equalsIgnoreCase("WAIT_FOR_TURN")) {
-                jLabel.setText("Warte auf Spielzug");
+                jLabel.setText(STRING_BUNDLE.getString(status));
                 setEnabledField(false);
             } else if (status.equalsIgnoreCase("MAKE_A_TURN")) {
-                jLabel.setText("Mache einen Spielzug");
+                jLabel.setText(STRING_BUNDLE.getString(status));
                 setEnabledField(true);
             } else if (status.equalsIgnoreCase("SET_POS")) {
                 int x = new Integer(receive());
@@ -307,14 +309,15 @@ public final class MainClientFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("TicTacToe v2.0");
+        setTitle("TicTacToe v2.1");
         setMinimumSize(new java.awt.Dimension(313, 527));
         setName("frame"); // NOI18N
         setResizable(false);
 
-        connectionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Verbindung"));
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/strings"); // NOI18N
+        connectionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("View_connection"))); // NOI18N
 
-        addressLabel.setText("Server-Adresse:");
+        addressLabel.setText(bundle.getString("Field_server")); // NOI18N
 
         addressTextField.setText("easyuse.hopto.org");
         addressTextField.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -323,7 +326,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
             }
         });
 
-        portLabel.setText("Port:");
+        portLabel.setText(bundle.getString("Field_Port")); // NOI18N
 
         portTextField.setText("50471");
         portTextField.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -343,9 +346,9 @@ public final class MainClientFrame extends javax.swing.JFrame {
             }
         });
 
-        playerLabel.setText("Name:");
+        playerLabel.setText(bundle.getString("Field_name")); // NOI18N
 
-        connectButton.setText("Verbinden");
+        connectButton.setText(bundle.getString("Field_connect")); // NOI18N
         connectButton.setEnabled(false);
         connectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -353,7 +356,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
             }
         });
 
-        updateCheckButton.setText("Check for Updates");
+        updateCheckButton.setText(bundle.getString("Field_update")); // NOI18N
         updateCheckButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 updateCheckButtonActionPerformed(evt);
@@ -405,7 +408,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        gamePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Spiel"));
+        gamePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("View_field"))); // NOI18N
         gamePanel.setEnabled(false);
 
         buttonGroup1.add(oRadio);
@@ -496,9 +499,9 @@ public final class MainClientFrame extends javax.swing.JFrame {
 
         jLabel.setText("Nicht verbunden");
 
-        playerXOLabel.setText("Du bist Spieler:");
+        playerXOLabel.setText(bundle.getString("Field_player_type")); // NOI18N
 
-        jLabel1.setText("Information:");
+        jLabel1.setText(bundle.getString("Field_information")); // NOI18N
         jLabel1.setToolTipText("");
 
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
@@ -646,16 +649,16 @@ public final class MainClientFrame extends javax.swing.JFrame {
             setActivePlayer(player);
             //Waiting for enemy to connect
             jLabel.setText(receive());
-            JOptionPane.showMessageDialog(null, "Connected to " + serverIP);
+            JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_connected_to") + " " + serverIP);
             enemy = receive();
             //Enemy connected
-            JOptionPane.showMessageDialog(null, "Spiel gegen " + enemy);
+            JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_game_against") + " " + enemy);
             connection.activateGame();
             if (!connection.isAlive()) {
                 connection.start();
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Unable to connect to server " + serverIP);
+            JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_unable_to_connect") + " " + serverIP);
             setConnectionEditable(true);
         }
 
