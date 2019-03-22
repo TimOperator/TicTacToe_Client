@@ -13,6 +13,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import java.util.ResourceBundle;
@@ -32,6 +33,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
     private String enemy;
     private final Connection connection;
     private static final ResourceBundle STRING_BUNDLE = ResourceBundle.getBundle("resources/strings");
+    private FieldStatusEnum fieldArray[][] = new FieldStatusEnum[3][3];
 
     /**
      * Creates new form MainJFrame
@@ -46,6 +48,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
         connection = new Connection(this);
         setLocationRelativeTo(null);
     }
+
     public void useAdvancedMode(Boolean value) {
         if (value) {
             //Hide this for release
@@ -95,7 +98,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
             return null;
         }
     }
-    
+
     protected void disableButton(int x, int y, FieldStatusEnum stat) {
         switch (x) {
             case 0:
@@ -199,6 +202,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
 
     /**
      * Set status of field
+     *
      * @param bo Enable field
      */
     protected void setEnabledField(boolean bo) {
@@ -246,6 +250,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_draw"));
         }
         startGameButton.setEnabled(true);
+        jTabbedPane2.setEnabledAt(1, true);
         setConnectionEditable(true);
     }
 
@@ -270,6 +275,128 @@ public final class MainClientFrame extends javax.swing.JFrame {
         winner = receive();
     }
 
+    private void swapPlayer() {
+        if (player == FieldStatusEnum.O) {
+            player = FieldStatusEnum.X;
+        } else if (player == FieldStatusEnum.X) {
+            player = FieldStatusEnum.O;
+        }
+        if (player == FieldStatusEnum.X) {
+            xOfflineRadio.setSelected(true);
+            oOfflineRadio.setSelected(false);
+        } else {
+            oOfflineRadio.setSelected(true);
+            xOfflineRadio.setSelected(false);
+        }
+    }
+
+    /**
+     * Check if one of the player has won the game
+     *
+     * @return Player, who won or NONE if no one won yet
+     */
+    public FieldStatusEnum isWon() {
+        int x = 0;
+        int o = 0;
+
+        //Zeilen -
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                if (fieldArray[i][j] == FieldStatusEnum.O) {
+                    o++;
+                } else if (fieldArray[i][j] == FieldStatusEnum.X) {
+                    x++;
+                }
+            }
+            if (o == 3) {
+                return FieldStatusEnum.O;
+            } else if (x == 3) {
+                return FieldStatusEnum.X;
+            } else {
+                x = 0;
+                o = 0;
+            }
+        }
+
+        //Spalten |
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                if (fieldArray[j][i] == FieldStatusEnum.O) {
+                    o++;
+                } else if (fieldArray[j][i] == FieldStatusEnum.X) {
+                    x++;
+                }
+            }
+            if (o == 3) {
+                return FieldStatusEnum.O;
+            } else if (x == 3) {
+                return FieldStatusEnum.X;
+            } else {
+                x = 0;
+                o = 0;
+            }
+        }
+
+        //Diagonal \
+        for (int i = 0; i < 3; ++i) {
+            if (fieldArray[i][i] == FieldStatusEnum.O) {
+                o++;
+            } else if (fieldArray[i][i] == FieldStatusEnum.X) {
+                x++;
+            }
+        }
+        if (o == 3) {
+            return FieldStatusEnum.O;
+        } else if (x == 3) {
+            return FieldStatusEnum.X;
+        } else {
+            x = 0;
+            o = 0;
+        }
+
+        //Diagonal /
+        for (int i = 0; i < 3; ++i) {
+            if (fieldArray[2 - i][i] == FieldStatusEnum.O) {
+                o++;
+            } else if (fieldArray[2 - i][i] == FieldStatusEnum.X) {
+                x++;
+            }
+        }
+        if (o == 3) {
+            return FieldStatusEnum.O;
+        } else if (x == 3) {
+            return FieldStatusEnum.X;
+        } else {
+            x = 0;
+            o = 0;
+        }
+        return FieldStatusEnum.NONE;
+    }
+
+    /**
+     * Check if the game has ended with a draw
+     *
+     * @return true, if the game is draw, else false
+     */
+    public boolean isDraw() {
+        int x = 0;
+        int o = 0;
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                if (fieldArray[i][j] == FieldStatusEnum.O) {
+                    o++;
+                } else if (fieldArray[i][j] == FieldStatusEnum.X) {
+                    x++;
+                }
+            }
+        }
+        if (x + o >= 9) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void setLabel(String text) {
         jLabel.setText(text);
     }
@@ -277,8 +404,101 @@ public final class MainClientFrame extends javax.swing.JFrame {
     protected void setPos(int x, int y, JButton button) {
         //button.setEnabled(false);
         //button.setText(player.toString());
-        send("" + x);
-        send("" + y);
+        if (connection.isActiveGame()) {
+            send("" + x);
+            send("" + y);
+        } else {
+            disableButton(x, y, player);
+            fieldArray[x][y] = player;
+
+            // Playing against computer
+            if (localAIRadioButton.isSelected()) {
+                FieldStatusEnum winner = isWon();
+                if (winner == FieldStatusEnum.NONE) {
+                    if (isDraw()) {
+                        // Draw
+                        endGame(winner);
+                    } else {
+                        // Computer set position and check again
+                        setComputerPosition();
+                        winner = isWon();
+                        if (winner != FieldStatusEnum.NONE || isDraw()) {
+                            endGame(winner);
+                        }
+                        return;
+                    }
+                } else {
+                    endGame(winner);
+                }
+            } 
+            
+            // Local multiplayer
+            if (localMPRadioButton.isSelected()) {
+                FieldStatusEnum winner = isWon();
+                if (winner == FieldStatusEnum.NONE) {
+                    if (isDraw()) {
+                        // Draw
+                        endGame(winner);
+                    } else {
+                        swapPlayer();
+                        jLabel.setText(STRING_BUNDLE.getString("Inform_current_turn") + player.toString());
+                        return;
+                    }
+                } else {
+                    // Some player won
+                    endGame(winner);
+                }
+
+            }
+        }
+    }
+
+    private void setComputerPosition() {
+        FieldStatusEnum player2;
+        if (player == FieldStatusEnum.O) {
+            player2 = FieldStatusEnum.X;
+        } else {
+            player2 = FieldStatusEnum.O;
+        }
+
+        Random rd = new Random();
+        int xRand;
+        int yRand;
+        do {
+            xRand = rd.nextInt(3);
+            yRand = rd.nextInt(3);
+        } while (fieldArray[xRand][yRand] != FieldStatusEnum.NONE);
+        disableButton(xRand, yRand, player2);
+        fieldArray[xRand][yRand] = player2;
+    }
+
+    private void endGame(FieldStatusEnum winner) {
+        if (localAIRadioButton.isSelected()) {
+            if (winner == player) {
+                // Play won against computer
+                JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_you_won"));
+            } else if (winner == FieldStatusEnum.NONE) {
+                // draw
+                JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_draw"));
+            } else {
+                // computer won
+                JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_computer_won"));
+            }
+        } else {
+            if (winner == FieldStatusEnum.NONE) {
+                // draw
+                JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Infom_draw"));
+            } else {
+                // Player winner won
+                JOptionPane.showMessageDialog(null, winner.toString() + " " + STRING_BUNDLE.getString("Inform_opposition_won"));
+            }
+        }
+        startGameButton.setEnabled(true);
+        localAIRadioButton.setEnabled(true);
+        localMPRadioButton.setEnabled(true);
+        xOfflineRadio.setEnabled(true);
+        oOfflineRadio.setEnabled(true);
+        jTabbedPane2.setEnabledAt(0, true);
     }
 
     /**
@@ -290,8 +510,9 @@ public final class MainClientFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        playerTypeButtonGroup = new javax.swing.ButtonGroup();
+        playerOnlineTypeButtonGroup = new javax.swing.ButtonGroup();
         aiButtonGroup = new javax.swing.ButtonGroup();
+        playerOfflineButtonGroup = new javax.swing.ButtonGroup();
         gamePanel = new javax.swing.JPanel();
         fieldPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
@@ -311,8 +532,6 @@ public final class MainClientFrame extends javax.swing.JFrame {
         portTextField = new javax.swing.JTextField();
         playerTextField = new javax.swing.JTextField();
         playerLabel = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel = new javax.swing.JLabel();
         playerXOLabel = new javax.swing.JLabel();
         xRadio = new javax.swing.JRadioButton();
         oRadio = new javax.swing.JRadioButton();
@@ -322,6 +541,11 @@ public final class MainClientFrame extends javax.swing.JFrame {
         localMPRadioButton = new javax.swing.JRadioButton();
         localAIRadioButton = new javax.swing.JRadioButton();
         startGameButton = new javax.swing.JButton();
+        xOfflineRadio = new javax.swing.JRadioButton();
+        oOfflineRadio = new javax.swing.JRadioButton();
+        offlinePlayerLabel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TicTacToe v3.0");
@@ -451,14 +675,9 @@ public final class MainClientFrame extends javax.swing.JFrame {
 
         playerLabel.setText(bundle.getString("Field_name")); // NOI18N
 
-        jLabel1.setText(bundle.getString("Field_information")); // NOI18N
-        jLabel1.setToolTipText("");
-
-        jLabel.setText("Nicht verbunden");
-
         playerXOLabel.setText(bundle.getString("Field_player_type")); // NOI18N
 
-        playerTypeButtonGroup.add(xRadio);
+        playerOnlineTypeButtonGroup.add(xRadio);
         xRadio.setSelected(true);
         xRadio.setText("X");
         xRadio.setEnabled(false);
@@ -468,7 +687,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
             }
         });
 
-        playerTypeButtonGroup.add(oRadio);
+        playerOnlineTypeButtonGroup.add(oRadio);
         oRadio.setText("O");
         oRadio.setEnabled(false);
         oRadio.addActionListener(new java.awt.event.ActionListener() {
@@ -501,18 +720,13 @@ public final class MainClientFrame extends javax.swing.JFrame {
                         .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(playerTextField)
                             .addComponent(portTextField)
-                            .addComponent(addressTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)))
+                            .addComponent(addressTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)))
                     .addGroup(connectionPanelLayout.createSequentialGroup()
-                        .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(playerXOLabel)
-                            .addComponent(jLabel1))
+                        .addComponent(playerXOLabel)
                         .addGap(18, 18, 18)
-                        .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel)
-                            .addGroup(connectionPanelLayout.createSequentialGroup()
-                                .addComponent(xRadio)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(oRadio)))
+                        .addComponent(xRadio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(oRadio)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, connectionPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -539,11 +753,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
                     .addComponent(playerXOLabel)
                     .addComponent(xRadio)
                     .addComponent(oRadio))
-                .addGap(10, 10, 10)
-                .addGroup(connectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addComponent(connectButton)
                 .addContainerGap())
         );
@@ -573,6 +783,14 @@ public final class MainClientFrame extends javax.swing.JFrame {
             }
         });
 
+        playerOfflineButtonGroup.add(xOfflineRadio);
+        xOfflineRadio.setText("X");
+
+        playerOfflineButtonGroup.add(oOfflineRadio);
+        oOfflineRadio.setText("O");
+
+        offlinePlayerLabel.setText(bundle.getString("Field_player_type")); // NOI18N
+
         javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
         settingsPanel.setLayout(settingsPanelLayout);
         settingsPanelLayout.setHorizontalGroup(
@@ -581,31 +799,45 @@ public final class MainClientFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(localMPRadioButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(localAIRadioButton)
-                        .addGap(0, 13, Short.MAX_VALUE))
+                        .addComponent(offlinePlayerLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(xOfflineRadio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(oOfflineRadio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                        .addComponent(startGameButton))
                     .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(updateCheckButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(startGameButton)))
+                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(localAIRadioButton)
+                            .addComponent(updateCheckButton)
+                            .addComponent(localMPRadioButton))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         settingsPanelLayout.setVerticalGroup(
             settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsPanelLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addContainerGap()
+                .addComponent(updateCheckButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addComponent(localMPRadioButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(localAIRadioButton)
+                .addGap(18, 18, 18)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(localMPRadioButton)
-                    .addComponent(localAIRadioButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, Short.MAX_VALUE)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(updateCheckButton)
-                    .addComponent(startGameButton))
+                    .addComponent(startGameButton)
+                    .addComponent(xOfflineRadio)
+                    .addComponent(oOfflineRadio)
+                    .addComponent(offlinePlayerLabel))
                 .addContainerGap())
         );
 
         jTabbedPane2.addTab(bundle.getString("View_offline"), settingsPanel); // NOI18N
+
+        jLabel1.setText(bundle.getString("Field_information")); // NOI18N
+        jLabel1.setToolTipText("");
+
+        jLabel.setText("Nicht verbunden");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -613,16 +845,25 @@ public final class MainClientFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jTabbedPane2)
-                    .addComponent(gamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jTabbedPane2)
+                        .addComponent(gamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel)))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -726,6 +967,7 @@ public final class MainClientFrame extends javax.swing.JFrame {
             if (!connection.isAlive()) {
                 connection.start();
                 startGameButton.setEnabled(false);
+                jTabbedPane2.setEnabledAt(1, false);
             }
         } else {
             JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_unable_to_connect") + " " + serverIP);
@@ -746,8 +988,37 @@ public final class MainClientFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_game_running"));
             return;
         }
+
+        localAIRadioButton.setEnabled(false);
+        localMPRadioButton.setEnabled(false);
+        xOfflineRadio.setEnabled(false);
+        oOfflineRadio.setEnabled(false);
+        startGameButton.setEnabled(false);
+        jTabbedPane2.setEnabledAt(0, false);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                fieldArray[i][j] = FieldStatusEnum.NONE;
+            }
+        }
+
+        // No player type selected
+        if (!xOfflineRadio.isSelected() && !oOfflineRadio.isSelected()) {
+            // Play against ai
+            if (localAIRadioButton.isSelected()) {
+                JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Field_player_type") + " X");
+            } else {
+                JOptionPane.showMessageDialog(null, STRING_BUNDLE.getString("Inform_start_with") + " X");
+            }
+            xOfflineRadio.setSelected(true);
+        }
+        if (xOfflineRadio.isSelected()) {
+            player = FieldStatusEnum.X;
+        } else {
+            player = FieldStatusEnum.O;
+        }
         clearAll();
         setEnabledField(true);
+        jLabel.setText(STRING_BUNDLE.getString("Inform_current_turn") + " " + player.toString());
     }//GEN-LAST:event_startGameButtonActionPerformed
 
     /**
@@ -803,16 +1074,20 @@ public final class MainClientFrame extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JRadioButton localAIRadioButton;
     private javax.swing.JRadioButton localMPRadioButton;
+    private javax.swing.JRadioButton oOfflineRadio;
     private javax.swing.JRadioButton oRadio;
+    private javax.swing.JLabel offlinePlayerLabel;
     private javax.swing.JLabel playerLabel;
+    private javax.swing.ButtonGroup playerOfflineButtonGroup;
+    private javax.swing.ButtonGroup playerOnlineTypeButtonGroup;
     private javax.swing.JTextField playerTextField;
-    private javax.swing.ButtonGroup playerTypeButtonGroup;
     private javax.swing.JLabel playerXOLabel;
     private javax.swing.JLabel portLabel;
     private javax.swing.JTextField portTextField;
     private javax.swing.JPanel settingsPanel;
     private javax.swing.JButton startGameButton;
     private javax.swing.JButton updateCheckButton;
+    private javax.swing.JRadioButton xOfflineRadio;
     private javax.swing.JRadioButton xRadio;
     // End of variables declaration//GEN-END:variables
 
