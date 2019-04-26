@@ -5,7 +5,7 @@
  */
 package tictactoe_client;
 
-import ServerConnection.MainServerConnector;
+import de.hamp_it.EasyuseServerConnector.MainServerConnector;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.io.DataInputStream;
