@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tictactoe_client;
+package de.hamp_it.tictactoe_client;
 
 /**
  *

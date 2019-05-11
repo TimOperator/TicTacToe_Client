@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tictactoe_client;
+package de.hamp_it.tictactoe_client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -23,7 +23,7 @@ public class Connection extends Thread {
     public boolean isActiveGame() {
         return activeGame;
     }
-    private final ResourceBundle stringBundle = ResourceBundle.getBundle("resources/strings");
+    private final ResourceBundle stringBundle = ResourceBundle.getBundle("strings");
 
     public Connection(MainClientFrame mcf) {
         this.window = mcf;

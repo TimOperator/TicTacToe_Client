@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tictactoe_client;
+package de.hamp_it.tictactoe_client;
 
 import java.util.ResourceBundle;
 import javax.swing.UIManager;
@@ -15,7 +15,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class TicTacToe_Client {
 
-    private static final ResourceBundle STRING_BUNDLE = ResourceBundle.getBundle("resources/strings");
+    private static final ResourceBundle STRING_BUNDLE = ResourceBundle.getBundle("strings");
     
     /**
      * @param args the command line arguments
